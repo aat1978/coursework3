@@ -7,8 +7,15 @@ search_blueprint = Blueprint('search_blueprint', __name__, template_folder='temp
 # Создаем вьюшку, используя в декораторе блюпринт вместо app
 @search_blueprint.route('/')
 def search_page():
-    s = request.args.get('s')
-    posts = Utils.search_for_posts(s)
-    posts_number = len(posts)
-    return render_template("search.html", posts=posts, posts_number=posts_number)
+    posts = []
+    posts_number = []
+    try:
+        s = request.args['s']
+    except KeyError:
+        logging.error('Вы ничего не ввели')
+    else:
+        posts = Utils.search_for_posts(s)
+        posts_number = len(posts)
+    finally:
+        return render_template("search.html", posts=posts, posts_number=posts_number)
 
